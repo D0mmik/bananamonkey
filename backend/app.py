@@ -1,23 +1,20 @@
-from anyio.streams import file
 from fastapi import FastAPI
 from fastapi import UploadFile, File
 import uvicorn
+from io import BytesIO
 
-from backend.prediction import read_image, preprocess_image, predict_image
+from prediction import predict_image, preprocess_image
 
 app = FastAPI()
 
-
-@app.get("/index")
-def hello_world():
-    return {"Hello": "World"}
-
-
 @app.post("/api/predict")
-def predict(file: UploadFile = File(...)):
-    image = read_image(file)
-    image = preprocess_image(image)
-    return predict_image(image)
+async def predict(file: UploadFile = File(...)):
+
+    image_bytes = await file.read()
+    image_array = preprocess_image(BytesIO(image_bytes))
+    prediction = predict_image(image_array)
+
+    return {"prediction": round(float(prediction), 4)}
 
 
 if __name__ == "__main__":

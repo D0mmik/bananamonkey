@@ -7,7 +7,7 @@ input_shape = (256, 256)
 
 
 def load_model():
-    return tf.keras.models.load_model('model.h5')
+    return tf.keras.models.load_model('bananamonkey.h5')
 
 
 _model = load_model()
@@ -18,13 +18,16 @@ def read_image(image_encoded):
     return pil_image
 
 
-def preprocess_image(image: Image.Image):
-    image = image.resize(input_shape)
-    image = np.asarray(image)
-    image = np.expand_dims(image / 255, 0)
+def preprocess_image(image_bytes: BytesIO):
 
-    return image
+    image = Image.open(image_bytes).resize((256, 256))
+
+    image_array = np.array(image) / 255.0
+
+    image_array = np.expand_dims(image_array, axis=0)
+    
+    return image_array
 
 
-def predict_image(image: np.ndarray):
-    return _model.predict(image)
+def predict_image(image_array):
+    return _model.predict(image_array)
