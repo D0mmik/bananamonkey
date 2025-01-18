@@ -32,7 +32,9 @@ function FileUpload() {
       const response = await fetch("https://bananamonkey-129035833870.europe-west3.run.app/api/predict", {
         method: "POST",
         body: formData,
-        headers: {},
+        headers: {
+          "Access-Control-Allow-Origin": "*"
+        },
       });
 
       if (!response.ok) {
