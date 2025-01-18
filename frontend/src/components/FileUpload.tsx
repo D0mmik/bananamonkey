@@ -33,7 +33,6 @@ function FileUpload() {
         method: "POST",
         body: formData,
         headers: {
-          "Access-Control-Allow-Origin": "*"
         },
       });
 

@@ -13,18 +13,18 @@ origins = [
 ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Allow requests from these origins
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
 @app.post("/api/predict")
-async def predict(file: UploadFile = File(...)):
+async def predict(file: UploadFile):
 
-    image_bytes = await file.read()
-    image_array = preprocess_image(BytesIO(image_bytes))
+    data = await file.read()
+    image_array = preprocess_image(BytesIO(data))
     prediction = predict_image(image_array)
 
     return {"prediction": round(float(prediction), 4)}
